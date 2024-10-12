@@ -71,4 +71,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(OauthToken::class);
     }
+
+    public function weiboToken()
+    {
+        return $this->hasOne(WeiboToken::class);
+    }
 }

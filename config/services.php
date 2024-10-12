@@ -37,4 +37,11 @@ return [
         'redirect' => env('TUMBLR_REDIRECT_URI'),
     ],
 
+
+    'weibo' => [
+        'app_key' => env('WEIBO_APP_KEY'),
+        'app_secret' => env('WEIBO_APP_SECRET'),
+        'callback_url' => env('WEIBO_CALLBACK_URL'),
+    ],
+
 ];

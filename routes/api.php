@@ -9,6 +9,8 @@ use App\Http\Controllers\PinController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransferController;
 use App\Http\Controllers\TumblrAuthController;
+use App\Http\Controllers\TumblrPostController;
+use App\Http\Controllers\WeiboController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -74,3 +76,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/tumblr/post', [TumblrPostController::class, 'create']);
     Route::get('/tumblr/connection', [TumblrAuthController::class, 'checkTumblrConnection']);
 });
+
+Route::get('/connect-weibo', [WeiboController::class, 'connect'])->name('weibo.connect');
+Route::get('/oauth-callback', [WeiboController::class, 'callback'])->name('weibo.callback');
+Route::get('/compose', [WeiboController::class, 'compose'])->name('compose');
+Route::post('/publish', [WeiboController::class, 'publish'])->name('publish');
