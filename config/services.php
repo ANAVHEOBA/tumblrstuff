@@ -62,4 +62,9 @@ return [
     'redirect' => env('BAIDU_REDIRECT_URI'),
 ],
 
+'meetup' => [
+    'client_id' => env('MEETUP_CLIENT_ID'),
+    'client_secret' => env('MEETUP_CLIENT_SECRET'),
+],
+
 ];

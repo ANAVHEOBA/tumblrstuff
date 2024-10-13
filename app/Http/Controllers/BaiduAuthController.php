@@ -2,67 +2,112 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\BaiduToken;
+use App\Models\Post;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 
-class BaiduAuthController extends Controller
+class PostController extends Controller
 {
-    public function redirect()
+    public function create()
     {
-        $query = http_build_query([
-            'response_type' => 'code',
-            'client_id' => config('services.baidu.client_id'),
-            'redirect_uri' => config('services.baidu.redirect'),
-            'scope' => 'basic',
-        ]);
-
-        return redirect('https://openapi.baidu.com/oauth/2.0/authorize?' . $query);
+        return view('posts.create');
     }
 
-    public function callback(Request $request)
+    public function store(Request $request)
     {
-        $response = Http::post('https://openapi.baidu.com/oauth/2.0/token', [
-            'grant_type' => 'authorization_code',
-            'code' => $request->code,
-            'client_id' => config('services.baidu.client_id'),
-            'client_secret' => config('services.baidu.client_secret'),
-            'redirect_uri' => config('services.baidu.redirect'),
+        $validatedData = $request->validate([
+            'content' => 'required|string',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'video' => 'mimetypes:video/avi,video/mpeg,video/quicktime|max:20000',
         ]);
 
-        $tokenData = $response->json();
+        $post = new Post();
+        $post->user_id = auth()->id();
+        $post->content = $validatedData['content'];
 
-        if (!isset($tokenData['access_token'])) {
-            return redirect('/login')->with('error', 'Failed to authenticate with Baidu.');
+        // Handle Image Upload
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('post_images', 'public');
+            $post->image_path = $imagePath;
         }
 
-        $userInfoResponse = Http::get('https://openapi.baidu.com/rest/2.0/passport/users/getInfo', [
-            'access_token' => $tokenData['access_token'],
+        // Handle Video Upload
+        if ($request->hasFile('video')) {
+            $videoPath = $request->file('video')->store('post_videos', 'public');
+            $post->video_path = $videoPath;
+        }
+
+        $post->save();
+
+        // Publish to Baidu
+        $this->publishToBaidu($post);
+
+        return redirect()->route('posts.create')->with('status', 'Post created and published to Baidu!');
+    }
+
+    private function publishToBaidu(Post $post)
+    {
+        $user = $post->user;
+        $baiduToken = $user->baiduToken;
+
+        if (!$baiduToken) {
+            return; // No Baidu token available, skip publishing
+        }
+
+        if ($baiduToken->expires_at->isPast()) {
+            // Handle token refresh if the token is expired
+            $refreshedToken = $this->refreshBaiduToken($baiduToken);
+
+            if (!$refreshedToken) {
+                // If token refresh failed, stop the publishing process
+                return;
+            }
+
+            // Use the refreshed token
+            $baiduToken = $refreshedToken;
+        }
+
+        // API request to Baidu to publish the post
+        $response = Http::post('https://api.baidu.com/post', [
+            'access_token' => $baiduToken->access_token,
+            'content' => $post->content,
+            // Add image and video data if applicable
+            'image' => $post->image_path ? asset('storage/' . $post->image_path) : null,
+            'video' => $post->video_path ? asset('storage/' . $post->video_path) : null,
         ]);
 
-        $userInfo = $userInfoResponse->json();
+        // Handle the API response
+        if ($response->successful()) {
+            $post->published_to_baidu = true;
+            $post->baidu_post_id = $response->json()['post_id'] ?? null; // Adjust based on actual Baidu API response
+            $post->save();
+        }
+    }
 
-        $user = User::updateOrCreate(
-            ['baidu_id' => $userInfo['userid']],
-            [
-                'name' => $userInfo['username'],
-                'email' => $userInfo['userid'] . '@baidu.com', // Baidu doesn't provide email, so we create a dummy one
-            ]
-        );
+    private function refreshBaiduToken($baiduToken)
+    {
+        // Implement token refresh logic, assuming Baidu uses a refresh token
+        $response = Http::post('https://api.baidu.com/oauth/token', [
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $baiduToken->refresh_token,
+            'client_id' => config('services.baidu.client_id'),
+            'client_secret' => config('services.baidu.client_secret'),
+        ]);
 
-        BaiduToken::updateOrCreate(
-            ['user_id' => $user->id],
-            [
-                'access_token' => $tokenData['access_token'],
-                'refresh_token' => $tokenData['refresh_token'],
-                'expires_at' => now()->addSeconds($tokenData['expires_in']),
-            ]
-        );
+        if ($response->successful()) {
+            $newAccessToken = $response->json()['access_token'];
+            $newExpiresAt = Carbon::now()->addSeconds($response->json()['expires_in']);
 
-        Auth::login($user);
+            // Update Baidu token in the database
+            $baiduToken->update([
+                'access_token' => $newAccessToken,
+                'expires_at' => $newExpiresAt,
+            ]);
 
-        return redirect('/home')->with('status', 'Successfully logged in with Baidu!');
+            return $baiduToken;
+        }
+
+        return null; // Return null if refresh fails
     }
 }

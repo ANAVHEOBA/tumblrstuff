@@ -82,4 +82,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(BaiduToken::class);
     }
+
+    public function meetupUser(): HasOne
+    {
+        return $this->hasOne(MeetupUser::class, 'user_id');
+    }
 }

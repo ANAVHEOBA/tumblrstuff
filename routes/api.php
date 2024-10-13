@@ -15,6 +15,9 @@ use App\Http\Controllers\WeChatController;
 use App\Http\Controllers\DouyinController;
 use App\Http\Controllers\BaiduAuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\MeetupAuthController;
+use App\Http\Controllers\MeetupDashboardController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -107,3 +110,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 });
+
+
+
+Route::get('/auth/meetup', [MeetupAuthController::class, 'redirectToMeetup'])->name('auth.meetup');
+Route::get('/auth/meetup/callback', [MeetupAuthController::class, 'handleMeetupCallback']);
+Route::get('/meetup/dashboard', [MeetupDashboardController::class, 'index'])->middleware('auth')->name('meetup.dashboard');
+Route::post('/meetup/publish', [MeetupDashboardController::class, 'publish'])->middleware('auth')->name('meetup.publish');
