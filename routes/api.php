@@ -11,6 +11,8 @@ use App\Http\Controllers\TransferController;
 use App\Http\Controllers\TumblrAuthController;
 use App\Http\Controllers\TumblrPostController;
 use App\Http\Controllers\WeiboController;
+use App\Http\Controllers\WeChatController;
+use App\Http\Controllers\DouyinController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -81,3 +83,16 @@ Route::get('/connect-weibo', [WeiboController::class, 'connect'])->name('weibo.c
 Route::get('/oauth-callback', [WeiboController::class, 'callback'])->name('weibo.callback');
 Route::get('/compose', [WeiboController::class, 'compose'])->name('compose');
 Route::post('/publish', [WeiboController::class, 'publish'])->name('publish');
+
+
+
+Route::get('/connect/wechat', [WeChatController::class, 'connect'])->name('wechat.connect');
+Route::get('/connect/wechat/callback', [WeChatController::class, 'callback'])->name('wechat.callback');
+Route::get('/compose', [ComposeController::class, 'index'])->name('compose')->middleware('auth');
+Route::post('/compose', [ComposeController::class, 'store'])->name('compose.store')->middleware('auth');
+
+
+Route::get('/douyin/connect', [DouyinController::class, 'connect'])->name('douyin.connect');
+Route::get('/douyin/callback', [DouyinController::class, 'callback'])->name('douyin.callback');
+Route::get('/compose', [DouyinController::class, 'compose'])->name('douyin.compose');
+Route::post('/publish', [DouyinController::class, 'publish'])->name('douyin.publish');

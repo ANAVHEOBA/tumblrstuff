@@ -44,4 +44,16 @@ return [
         'callback_url' => env('WEIBO_CALLBACK_URL'),
     ],
 
+    'wechat' => [
+    'appid' => env('WECHAT_APPID'),
+    'secret' => env('WECHAT_SECRET'),
+],
+
+
+'douyin' => [
+        'client_key' => env('DOUYIN_CLIENT_KEY'),
+        'client_secret' => env('DOUYIN_CLIENT_SECRET'),
+        'redirect' => env('DOUYIN_REDIRECT_URI'),
+    ],
+
 ];
