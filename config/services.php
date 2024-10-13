@@ -56,4 +56,10 @@ return [
         'redirect' => env('DOUYIN_REDIRECT_URI'),
     ],
 
+    'baidu' => [
+    'client_id' => env('BAIDU_CLIENT_ID'),
+    'client_secret' => env('BAIDU_CLIENT_SECRET'),
+    'redirect' => env('BAIDU_REDIRECT_URI'),
+],
+
 ];

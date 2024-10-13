@@ -13,6 +13,8 @@ use App\Http\Controllers\TumblrPostController;
 use App\Http\Controllers\WeiboController;
 use App\Http\Controllers\WeChatController;
 use App\Http\Controllers\DouyinController;
+use App\Http\Controllers\BaiduAuthController;
+use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -96,3 +98,12 @@ Route::get('/douyin/connect', [DouyinController::class, 'connect'])->name('douyi
 Route::get('/douyin/callback', [DouyinController::class, 'callback'])->name('douyin.callback');
 Route::get('/compose', [DouyinController::class, 'compose'])->name('douyin.compose');
 Route::post('/publish', [DouyinController::class, 'publish'])->name('douyin.publish');
+
+
+Route::get('/auth/baidu', [BaiduAuthController::class, 'redirect'])->name('baidu.auth');
+Route::get('/auth/baidu/callback', [BaiduAuthController::class, 'callback']);
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+});

@@ -72,4 +72,14 @@ class User extends Authenticatable
     {
         return $this->oauthTokens()->where('provider', 'douyin')->first();
     }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function baiduToken(): HasOne
+    {
+        return $this->hasOne(BaiduToken::class);
+    }
 }
