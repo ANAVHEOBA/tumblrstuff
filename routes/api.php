@@ -19,6 +19,8 @@ use App\Http\Controllers\MeetupAuthController;
 use App\Http\Controllers\MeetupDashboardController;
 use App\Http\Controllers\DailyPostController;
 use App\Http\Controllers\SocialAuthController;
+use App\Http\Controllers\RumbleController;
+use App\Http\Controllers\RumblePostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
