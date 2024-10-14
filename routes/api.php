@@ -17,7 +17,8 @@ use App\Http\Controllers\BaiduAuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\MeetupAuthController;
 use App\Http\Controllers\MeetupDashboardController;
-
+use App\Http\Controllers\DailyPostController;
+use App\Http\Controllers\SocialAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -117,3 +118,22 @@ Route::get('/auth/meetup', [MeetupAuthController::class, 'redirectToMeetup'])->n
 Route::get('/auth/meetup/callback', [MeetupAuthController::class, 'handleMeetupCallback']);
 Route::get('/meetup/dashboard', [MeetupDashboardController::class, 'index'])->middleware('auth')->name('meetup.dashboard');
 Route::post('/meetup/publish', [MeetupDashboardController::class, 'publish'])->middleware('auth')->name('meetup.publish');
+
+
+
+
+Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect'])->name('social.redirect');
+Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/daily-post/create', [DailyPostController::class, 'create'])->name('daily-post.create');
+    Route::post('/daily-post', [DailyPostController::class, 'store'])->name('daily-post.store');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/rumble/connect', [RumbleController::class, 'connect'])->name('rumble.connect');
+    Route::get('/rumble/callback', [RumbleController::class, 'callback'])->name('rumble.callback');
+    Route::post('/rumble/disconnect', [RumbleController::class, 'disconnect'])->name('rumble.disconnect');
+    Route::get('/rumble/post/create', [RumblePostController::class, 'create'])->name('rumble.post.create');
+    Route::post('/rumble/post', [RumblePostController::class, 'store'])->name('rumble.post.store');
+});

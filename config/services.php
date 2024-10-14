@@ -67,4 +67,16 @@ return [
     'client_secret' => env('MEETUP_CLIENT_SECRET'),
 ],
 
+
+'dailymotion' => [
+    'client_id' => env('DAILYMOTION_CLIENT_ID'),
+    'client_secret' => env('DAILYMOTION_CLIENT_SECRET'),
+    'redirect' => env('DAILYMOTION_REDIRECT_URI'),
+],
+
+'rumble' => [
+    'client_id' => env('RUMBLE_CLIENT_ID'),
+    'client_secret' => env('RUMBLE_CLIENT_SECRET'),
+],
+
 ];
