@@ -97,4 +97,9 @@ public function rumbleToken(): HasOne
     {
         return $this->hasOne(RumbleToken::class);
     }
+
+    public function snapchatToken(): HasOne
+    {
+        return $this->hasOne(SnapchatToken::class);
+    }
 }

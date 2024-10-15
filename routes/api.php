@@ -13,14 +13,14 @@ use App\Http\Controllers\TumblrPostController;
 use App\Http\Controllers\WeiboController;
 use App\Http\Controllers\WeChatController;
 use App\Http\Controllers\DouyinController;
-use App\Http\Controllers\BaiduAuthController;
-use App\Http\Controllers\PostController;
 use App\Http\Controllers\MeetupAuthController;
 use App\Http\Controllers\MeetupDashboardController;
 use App\Http\Controllers\DailyPostController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\RumbleController;
 use App\Http\Controllers\RumblePostController;
+use App\Http\Controllers\SnapchatController;
+use App\Http\Controllers\QPostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -96,8 +96,7 @@ Route::post('/publish', [WeiboController::class, 'publish'])->name('publish');
 
 Route::get('/connect/wechat', [WeChatController::class, 'connect'])->name('wechat.connect');
 Route::get('/connect/wechat/callback', [WeChatController::class, 'callback'])->name('wechat.callback');
-Route::get('/compose', [ComposeController::class, 'index'])->name('compose')->middleware('auth');
-Route::post('/compose', [ComposeController::class, 'store'])->name('compose.store')->middleware('auth');
+
 
 
 Route::get('/douyin/connect', [DouyinController::class, 'connect'])->name('douyin.connect');
@@ -106,13 +105,8 @@ Route::get('/compose', [DouyinController::class, 'compose'])->name('douyin.compo
 Route::post('/publish', [DouyinController::class, 'publish'])->name('douyin.publish');
 
 
-Route::get('/auth/baidu', [BaiduAuthController::class, 'redirect'])->name('baidu.auth');
-Route::get('/auth/baidu/callback', [BaiduAuthController::class, 'callback']);
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
-    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
-});
+
 
 
 
@@ -139,3 +133,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/rumble/post/create', [RumblePostController::class, 'create'])->name('rumble.post.create');
     Route::post('/rumble/post', [RumblePostController::class, 'store'])->name('rumble.post.store');
 });
+
+Route::get('/connect/snapchat', [SnapchatController::class, 'connect'])->name('snapchat.connect');
+Route::get('/connect/snapchat/callback', [SnapchatController::class, 'callback'])->name('snapchat.callback');
+Route::post('/disconnect/snapchat', [SnapchatController::class, 'disconnect'])->name('snapchat.disconnect');
+
+Route::get('/qcompose', [QPostController::class, 'create'])->name('post.create');
+Route::post('/post', [QPostController::class, 'store'])->name('post.store');

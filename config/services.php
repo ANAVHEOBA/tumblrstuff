@@ -79,4 +79,10 @@ return [
     'client_secret' => env('RUMBLE_CLIENT_SECRET'),
 ],
 
+'snapchat' => [
+    'client_id' => env('SNAPCHAT_CLIENT_ID'),
+    'client_secret' => env('SNAPCHAT_CLIENT_SECRET'),
+    'redirect' => env('SNAPCHAT_REDIRECT_URI'),
+],
+
 ];
