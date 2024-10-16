@@ -21,6 +21,7 @@ use App\Http\Controllers\RumbleController;
 use App\Http\Controllers\RumblePostController;
 use App\Http\Controllers\SnapchatController;
 use App\Http\Controllers\QPostController;
+use App\Http\Controllers\TTSController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -140,3 +141,8 @@ Route::post('/disconnect/snapchat', [SnapchatController::class, 'disconnect'])->
 
 Route::get('/qcompose', [QPostController::class, 'create'])->name('post.create');
 Route::post('/post', [QPostController::class, 'store'])->name('post.store');
+
+
+Route::post('/text-to-speech', [TTSController::class, 'convertTextToSpeech']);
+Route::get('/languages', [TTSController::class, 'getSupportedLanguages']);
+
