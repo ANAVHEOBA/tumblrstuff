@@ -12,7 +12,7 @@ class TTSController extends Controller
         $validated = $request->validate([
             'text' => 'required|string',
             'language' => 'required|string',
-            'download' => 'nullable|boolean' // Optional parameter to determine if file should be downloaded
+            'download' => 'nullable|boolean' 
         ]);
 
         $text = $validated['text'];
@@ -41,12 +41,12 @@ class TTSController extends Controller
         }
 
         if (file_exists($output_file)) {
-            // If download parameter is true, return the file for download
+            
             if ($request->input('download', false)) {
                 return response()->download($output_file)->deleteFileAfterSend(true);
             }
             
-            // Otherwise return the filename for use with the video conversion
+            
             return response()->json([
                 'success' => true,
                 'message' => 'Text-to-Speech conversion successful',
