@@ -16,29 +16,29 @@ def create_video_with_audio(audio_path, output_path, background_image_path=None,
         duration (float, optional): Duration of the video. If None, uses audio length
     """
     try:
-        # Load the audio file
+        
         audio_clip = AudioFileClip(audio_path)
         
-        # Get the duration from the audio if not specified
+        
         if duration is None:
             duration = audio_clip.duration
             
-        # Create the background
+        
         if background_image_path and os.path.exists(background_image_path):
-            # Use provided background image
+            
             background = ImageClip(background_image_path)
-            background = background.resize(width=1920)  # Resize to 1920p width
+            background = background.resize(width=1920)  
             background = background.set_duration(duration)
         else:
-            # Create a solid color background (dark blue)
+            
             color_clip = ColorClip(size=(1920, 1080), color=(25, 25, 112))
             background = color_clip.set_duration(duration)
         
-        # Combine audio with background
+        
         video = CompositeVideoClip([background])
         final_video = video.set_audio(audio_clip)
         
-        # Write the result to a file
+        
         final_video.write_videofile(
             output_path,
             fps=24,
@@ -48,7 +48,7 @@ def create_video_with_audio(audio_path, output_path, background_image_path=None,
             remove_temp=True
         )
         
-        # Clean up
+        # it cleans it up boss
         audio_clip.close()
         final_video.close()
         
