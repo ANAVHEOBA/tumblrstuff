@@ -22,6 +22,7 @@ use App\Http\Controllers\RumblePostController;
 use App\Http\Controllers\SnapchatController;
 use App\Http\Controllers\QPostController;
 use App\Http\Controllers\TTSController;
+use App\Http\Controllers\VideoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -144,5 +145,8 @@ Route::post('/post', [QPostController::class, 'store'])->name('post.store');
 
 
 Route::post('/text-to-speech', [TTSController::class, 'convertTextToSpeech']);
+
+Route::post('/speech-to-video', [VideoController::class, 'convertSpeechToVideo']);
+
 Route::get('/languages', [TTSController::class, 'getSupportedLanguages']);
 

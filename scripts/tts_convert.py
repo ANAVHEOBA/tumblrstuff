@@ -27,10 +27,10 @@ if __name__ == "__main__":
         sys.exit(1)
 
     try:
-        # Step 1: Translate the text to the target language
+        
         translated_text = translate_text(text, language)
 
-        # Step 2: Convert the translated text to speech
+        
         tts = gTTS(text=translated_text, lang=language)
         tts.save(output_file)
         print("Text-to-Speech conversion successful!")
